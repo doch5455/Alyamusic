@@ -26,7 +26,7 @@ from pyrogram.errors import FloodWait
 import random
 import re
 
-from HasiiMusic import app
+from Tune import app
 
 SPAM_CHATS = []
 EMOJI = [
