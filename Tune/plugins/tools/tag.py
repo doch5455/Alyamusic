@@ -70,11 +70,23 @@ EMOJI = [
     "🥬🍉🧁🧇🔮",
 ]
 
-def clean_text(text):
-    """Markdown özel karakterlerini kaçışla temizle"""
+
+def clean_text(text: str) -> str:
+    """
+    Telegram Markdown için özel karakterleri güvenli hâle getirir.
+    Özellikle '\' işareti ve Markdown karakterlerini kaçışlar.
+    """
     if not text:
         return ""
-    return re.sub(r'([_*()~`>#+-=|{}.!])', r'\\1', text)
+
+    # Önce ters eğik çizgiyi (backslash) kaçır:
+    # '\' -> '\\' böylece Telegram bunu yemiyor ve metinde düzgün görünüyor.
+    text = text.replace("\\", "\\\\")
+
+    # Telegram Markdown özel karakterlerini kaçır
+    # _ * [ ] ( ) ~ ` > # + - = | { } . !
+    return re.sub(r'([_*[\]()~`>#+\-=|{}.!])', r'\\\1', text)
+
 
 async def is_admin(chat_id, user_id):
     admin_ids = [
@@ -84,6 +96,7 @@ async def is_admin(chat_id, user_id):
         )
     ]
     return user_id in admin_ids
+
 
 async def process_members(chat_id, members, text=None, replied=None):
     tagged_members = 0
@@ -111,14 +124,14 @@ async def process_members(chat_id, members, text=None, replied=None):
                     await replied.reply_text(
                         usertxt,
                         disable_web_page_preview=True,
-                        parse_mode=ParseMode.MARKDOWN
+                        parse_mode=ParseMode.MARKDOWN,
                     )
                 else:
                     await app.send_message(
                         chat_id,
                         f"{text}\n{usertxt}",
                         disable_web_page_preview=True,
-                        parse_mode=ParseMode.MARKDOWN
+                        parse_mode=ParseMode.MARKDOWN,
                     )
                 await asyncio.sleep(2)  # Daha hızlı akış için 2 sn
                 usernum = 0
@@ -137,19 +150,20 @@ async def process_members(chat_id, members, text=None, replied=None):
                 await replied.reply_text(
                     usertxt,
                     disable_web_page_preview=True,
-                    parse_mode=ParseMode.MARKDOWN
+                    parse_mode=ParseMode.MARKDOWN,
                 )
             else:
                 await app.send_message(
                     chat_id,
                     f"{text}\n\n{usertxt}",
                     disable_web_page_preview=True,
-                    parse_mode=ParseMode.MARKDOWN
+                    parse_mode=ParseMode.MARKDOWN,
                 )
         except Exception as e:
             await app.send_message(chat_id, f"Son part gönderilirken hata: {str(e)}")
 
     return tagged_members
+
 
 # /utag alias'ı eklendi (herkesi etiketle)
 @app.on_message(
@@ -182,13 +196,14 @@ async def tag_all_users(_, message):
 
         text = None
         if not replied:
+            # Kullanıcının yazdığı metni Markdown için temizle
             text = clean_text(message.text.split(None, 1)[1])
 
         tagged_members = await process_members(
             message.chat.id,
             members,
             text=text,
-            replied=replied
+            replied=replied,
         )
 
         summary_msg = f"""
@@ -208,6 +223,7 @@ Etiketlenen: {tagged_members}
             SPAM_CHATS.remove(message.chat.id)
         except Exception:
             pass
+
 
 @app.on_message(
     filters.command(["admintag", "adminmention", "admins", "report"], prefixes=["/", "@"])
@@ -250,7 +266,7 @@ async def tag_all_admins(_, message):
             message.chat.id,
             members,
             text=text,
-            replied=replied
+            replied=replied,
         )
 
         summary_msg = f"""
@@ -270,6 +286,7 @@ Etiketlenen: {tagged_admins}
             SPAM_CHATS.remove(message.chat.id)
         except Exception:
             pass
+
 
 @app.on_message(
     filters.command(
@@ -298,6 +315,7 @@ async def cancelcmd(_, message):
         return await message.reply_text("Etiketleme başarıyla durduruldu!")
     else:
         return await message.reply_text("Şu anda çalışan bir etiketleme yok!")
+
 
 MODULE = "Tᴀɢᴀʟʟ"
 HELP = """
