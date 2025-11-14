@@ -2,6 +2,8 @@
 import time
 from pyrogram.types import InlineKeyboardButton
 from Tune.utils.formatters import time_to_seconds
+from Tune import app
+from config import SUPPORT_CHANNEL
 
 LAST_UPDATE_TIME = {}
 
@@ -68,12 +70,49 @@ def stream_markup_timer(_, chat_id, played, dur):
     return (
         [[InlineKeyboardButton(text=f"{played} {bar} {dur}", callback_data="GetTimer")]] +
         control_buttons(_, chat_id) +
-        [[InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data="close")]]
+        [
+            [
+                InlineKeyboardButton(
+                    text="➕ Beni Grubuna Ekle",
+                    url=f"https://t.me/{app.username}?startgroup=true",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="🩵 Kanal",
+                    url=SUPPORT_CHANNEL,
+                ),
+                InlineKeyboardButton(
+                    text=_["CLOSE_BUTTON"],
+                    callback_data="close",
+                ),
+            ],
+        ]
     )
 
 
 def stream_markup(_, chat_id):
-    return control_buttons(_, chat_id) + [[InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data="close")]]
+    return (
+        control_buttons(_, chat_id) +
+        [
+            [
+                InlineKeyboardButton(
+                    text="➕ Beni Grubuna Ekle",
+                    url=f"https://t.me/{app.username}?startgroup=true",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="🩵 Kanal",
+                    url=SUPPORT_CHANNEL,
+                ),
+                InlineKeyboardButton(
+                    text=_["CLOSE_BUTTON"],
+                    callback_data="close",
+                ),
+            ],
+        ]
+    )
 
 
 def playlist_markup(_, videoid, user_id, ptype, channel, fplay):
@@ -97,6 +136,7 @@ def playlist_markup(_, videoid, user_id, ptype, channel, fplay):
     ]
 
     return buttons
+
 
 def livestream_markup(_, videoid, user_id, mode, channel, fplay):
     return [
