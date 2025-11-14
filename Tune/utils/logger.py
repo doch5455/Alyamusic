@@ -14,18 +14,19 @@ async def play_logs(message, streamtype, query: str = None):
                 query = "—"
 
         logger_text = f"""
-<b>{app.mention} ᴘʟᴀʏ ʟᴏɢ</b>
+<b>{app.mention} Oynatma Kaydı</b>
 
-<b>ᴄʜᴀᴛ ɪᴅ :</b> <code>{message.chat.id}</code>
-<b>ᴄʜᴀᴛ ɴᴀᴍᴇ :</b> {message.chat.title}
-<b>ᴄʜᴀᴛ ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.chat.username}
+<b>Sohbet ID :</b> <code>{message.chat.id}</code>
+<b>Sohbet Adı :</b> {message.chat.title}
+<b>Sohbet Kullanıcı Adı :</b> @{message.chat.username}
 
-<b>ᴜsᴇʀ ɪᴅ :</b> <code>{message.from_user.id}</code>
-<b>ɴᴀᴍᴇ :</b> {message.from_user.mention}
-<b>ᴜsᴇʀɴᴀᴍᴇ :</b> @{message.from_user.username}
+<b>Kullanıcı ID :</b> <code>{message.from_user.id}</code>
+<b>Ad :</b> {message.from_user.mention}
+<b>Kullanıcı Adı :</b> @{message.from_user.username}
 
-<b>ǫᴜᴇʀʏ :</b> {query}
-<b>sᴛʀᴇᴀᴍᴛʏᴘᴇ :</b> {streamtype}"""
+<b>Arama Sorgusu :</b> {query}
+<b>Akış Türü :</b> {streamtype}"""
+
         if message.chat.id != LOGGER_ID:
             try:
                 await app.send_message(
