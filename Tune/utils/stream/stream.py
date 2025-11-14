@@ -1,12 +1,11 @@
-import os
-from random import randint
+# Authored By Certified Coders — v1.2 (2025-11-14)
 from typing import Union
 
 from pyrogram.types import InlineKeyboardMarkup
 
 import config
-from Tune import Carbon, YouTube, app
-from Tune.core.call import JARVIS
+from Tune import YouTube, app
+from Tune.core.call import StreamController
 from Tune.misc import db
 from Tune.utils.database import add_active_video_chat, is_active_chat
 from Tune.utils.exceptions import AssistantErr
@@ -37,8 +36,11 @@ async def stream(
     is_video = bool(video)
 
     if forceplay:
-        await JARVIS.force_stop_stream(chat_id)
+        await StreamController.force_stop_stream(chat_id)
 
+    # ——————————————————————————————
+    # PLAYLIST
+    # ——————————————————————————————
     if streamtype == "playlist":
         msg = f"{_['play_19']}\n\n"
         count = 0
@@ -87,12 +89,12 @@ async def stream(
                 if not file_path:
                     raise AssistantErr(_["play_14"])
 
-                await JARVIS.join_call(
+                await StreamController.join_call(
                     chat_id,
                     original_chat_id,
                     file_path,
                     video=is_video,
-                    image=None,
+                    image=thumbnail,
                 )
                 await put_queue(
                     chat_id,
@@ -108,7 +110,7 @@ async def stream(
                 )
                 button = stream_markup(_, chat_id)
                 run = await app.send_message(
-                    chat_id=original_chat_id,
+                    original_chat_id,
                     text=_["stream_1"].format(
                         f"https://t.me/{app.username}?start=info_{vidid}",
                         title[:23],
@@ -122,22 +124,29 @@ async def stream(
 
         if count == 0:
             return
+
+        # Playlist özetini Pastebin linkiyle sadece text olarak gönder
         link = await TuneBin(msg)
         upl = close_markup(_)
         final_position = len(db.get(chat_id) or []) - 1
         if final_position < 0:
             final_position = 0
+
         return await app.send_message(
-            chat_id=original_chat_id,
+            original_chat_id,
             text=_["play_21"].format(final_position, link),
             reply_markup=upl,
         )
 
+    # ——————————————————————————————
+    # YOUTUBE
+    # ——————————————————————————————
     elif streamtype == "youtube":
         link = result["link"]
         vidid = result["vidid"]
         title = (result["title"]).title()
         duration_min = result["duration_min"]
+        thumbnail = result["thumb"]
 
         try:
             file_path, direct = await YouTube.download(
@@ -170,12 +179,12 @@ async def stream(
         else:
             if not forceplay:
                 db[chat_id] = []
-            await JARVIS.join_call(
+            await StreamController.join_call(
                 chat_id,
                 original_chat_id,
                 file_path,
                 video=is_video,
-                image=None,
+                image=thumbnail,
             )
             await put_queue(
                 chat_id,
@@ -191,7 +200,7 @@ async def stream(
             )
             button = stream_markup(_, chat_id)
             run = await app.send_message(
-                chat_id=original_chat_id,
+                original_chat_id,
                 text=_["stream_1"].format(
                     f"https://t.me/{app.username}?start=info_{vidid}",
                     title[:23],
@@ -203,6 +212,9 @@ async def stream(
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "stream"
 
+    # ——————————————————————————————
+    # SOUNDCLOUD
+    # ——————————————————————————————
     elif streamtype == "soundcloud":
         file_path = result["filepath"]
         title = result["title"]
@@ -232,7 +244,7 @@ async def stream(
         else:
             if not forceplay:
                 db[chat_id] = []
-            await JARVIS.join_call(chat_id, original_chat_id, file_path, video=False)
+            await StreamController.join_call(chat_id, original_chat_id, file_path, video=False)
             await put_queue(
                 chat_id,
                 original_chat_id,
@@ -247,7 +259,7 @@ async def stream(
             )
             button = stream_markup(_, chat_id)
             run = await app.send_message(
-                chat_id=original_chat_id,
+                original_chat_id,
                 text=_["stream_1"].format(
                     config.SUPPORT_CHAT, title[:23], duration_min, user_name
                 ),
@@ -256,6 +268,9 @@ async def stream(
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "tg"
 
+    # ——————————————————————————————
+    # TELEGRAM
+    # ——————————————————————————————
     elif streamtype == "telegram":
         file_path = result["path"]
         link = result["link"]
@@ -286,7 +301,7 @@ async def stream(
         else:
             if not forceplay:
                 db[chat_id] = []
-            await JARVIS.join_call(chat_id, original_chat_id, file_path, video=is_video)
+            await StreamController.join_call(chat_id, original_chat_id, file_path, video=is_video)
             await put_queue(
                 chat_id,
                 original_chat_id,
@@ -303,17 +318,21 @@ async def stream(
                 await add_active_video_chat(chat_id)
             button = stream_markup(_, chat_id)
             run = await app.send_message(
-                chat_id=original_chat_id,
+                original_chat_id,
                 text=_["stream_1"].format(link, title[:23], duration_min, user_name),
                 reply_markup=InlineKeyboardMarkup(button),
             )
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "tg"
 
+    # ——————————————————————————————
+    # LIVE
+    # ——————————————————————————————
     elif streamtype == "live":
         link = result["link"]
         vidid = result["vidid"]
         title = (result["title"]).title()
+        thumbnail = result["thumb"]
         duration_min = "Live Track"
 
         if await is_active_chat(chat_id):
@@ -344,12 +363,12 @@ async def stream(
             if not file_path:
                 raise AssistantErr(_["play_14"])
 
-            await JARVIS.join_call(
+            await StreamController.join_call(
                 chat_id,
                 original_chat_id,
                 file_path,
                 video=is_video,
-                image=None,
+                image=thumbnail or None,
             )
             await put_queue(
                 chat_id,
@@ -365,7 +384,7 @@ async def stream(
             )
             button = stream_markup(_, chat_id)
             run = await app.send_message(
-                chat_id=original_chat_id,
+                original_chat_id,
                 text=_["stream_1"].format(
                     f"https://t.me/{app.username}?start=info_{vidid}",
                     title[:23],
@@ -377,9 +396,12 @@ async def stream(
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "tg"
 
+    # ——————————————————————————————
+    # INDEX
+    # ——————————————————————————————
     elif streamtype == "index":
         link = result
-        title = "Index veya M3U8 Akışı"
+        title = "Index Url Stream"
         duration_min = "00:00"
 
         if await is_active_chat(chat_id):
@@ -402,7 +424,7 @@ async def stream(
         else:
             if not forceplay:
                 db[chat_id] = []
-            await JARVIS.join_call(
+            await StreamController.join_call(
                 chat_id,
                 original_chat_id,
                 link,
@@ -421,7 +443,7 @@ async def stream(
             )
             button = stream_markup(_, chat_id)
             run = await app.send_message(
-                chat_id=original_chat_id,
+                original_chat_id,
                 text=_["stream_2"].format(user_name),
                 reply_markup=InlineKeyboardMarkup(button),
             )
