@@ -19,7 +19,6 @@ pyyaml==6.0.3
 requests
 speedtest-cli
 spotipy
-tgcrypto==1.2.5
 unidecode
 yt-dlp[default]==2025.11.12
 git+https://github.com/CertifiedCoders/youtube-search-python
