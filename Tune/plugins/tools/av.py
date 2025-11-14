@@ -31,7 +31,7 @@ from pyrogram.types import (
     CallbackQuery,
 )
 
-from HasiiMusic import app
+from Tune import app
 
 
 # ────────────────────────────────────────────────
