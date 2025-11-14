@@ -42,13 +42,12 @@ HEROKU_API_KEY = getenv("HEROKU_API_KEY")
 
 # ───── Git & Updates ───── #
 UPSTREAM_REPO = getenv("UPSTREAM_REPO", "https://github.com/CertifiedCoders/TuneViaBot")
-UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "Master")
+UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "main")
 GIT_TOKEN = getenv("GIT_TOKEN")
 
 # ───── Support & Community ───── #
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/CertifiedNetwork")
-SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/CertifiedDiscussion")
-
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/maviduyuru")
+SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/kraliyetchattr")
 # ───── Assistant Auto Leave ───── #
 AUTO_LEAVING_ASSISTANT = False
 AUTO_LEAVE_ASSISTANT_TIME = int(getenv("ASSISTANT_LEAVE_TIME", "3600"))
@@ -71,29 +70,27 @@ STRING5 = getenv("STRING_SESSION5")
 
 # ───── Bot Media Assets ───── #
 START_VIDS = [
-    "https://telegra.ph/file/9b7e1b820c72a14d90be7.mp4",
-    "https://telegra.ph/file/72f349b1386d6d9374a38.mp4",
-    "https://telegra.ph/file/a4d90b0cb759b67d68644.mp4"
+    "https://files.catbox.moe/hp4toh.mp4"
 ]
 
 STICKERS = [
     "CAACAgUAAx0Cd6nKUAACASBl_rnalOle6g7qS-ry-aZ1ZpVEnwACgg8AAizLEFfI5wfykoCR4h4E",
     "CAACAgUAAx0Cd6nKUAACATJl_rsEJOsaaPSYGhU7bo7iEwL8AAPMDgACu2PYV8Vb8aT4_HUPHgQ"
 ]
-HELP_IMG_URL = "https://files.catbox.moe/h3jqa8.jpg"
-PING_VID_URL = "https://files.catbox.moe/mi8nr0.mp4"
-PLAYLIST_IMG_URL = "https://files.catbox.moe/t72ntd.jpg"
-STATS_VID_URL = "https://files.catbox.moe/5vdaw5.mp4"
-TELEGRAM_AUDIO_URL = "https://files.catbox.moe/90juvd.jpg"
-TELEGRAM_VIDEO_URL = "https://files.catbox.moe/7qplwr.jpg"
-STREAM_IMG_URL = "https://files.catbox.moe/4roh51.jpg"
-SOUNCLOUD_IMG_URL = "https://files.catbox.moe/wpkxzt.jpg"
-YOUTUBE_IMG_URL = "https://files.catbox.moe/cq87ww.jpg"
-SPOTIFY_ARTIST_IMG_URL = "https://files.catbox.moe/qp5aa5.jpg"
-SPOTIFY_ALBUM_IMG_URL = "https://files.catbox.moe/qp5aa5.jpg"
-SPOTIFY_PLAYLIST_IMG_URL = "https://files.catbox.moe/qp5aa5.jpg"
-FAILED = "https://files.catbox.moe/cq87ww.jpg"
 
+HELP_IMG_URL = "https://files.catbox.moe/hp4toh.mp4"
+PING_VID_URL = "https://files.catbox.moe/hp4toh.mp4"
+PLAYLIST_IMG_URL = "https://files.catbox.moe/hp4toh.mp4"
+STATS_VID_URL = "https://files.catbox.moe/hp4toh.mp4"
+TELEGRAM_AUDIO_URL = "https://files.catbox.moe/hp4toh.mp4"
+TELEGRAM_VIDEO_URL = "https://files.catbox.moe/hp4toh.mp4"
+STREAM_IMG_URL = "https://files.catbox.moe/hp4toh.mp4"
+SOUNCLOUD_IMG_URL = "https://files.catbox.moe/hp4toh.mp4"
+YOUTUBE_IMG_URL = "https://files.catbox.moe/hp4toh.mp4"
+SPOTIFY_ARTIST_IMG_URL = "https://files.catbox.moe/hp4toh.mp4"
+SPOTIFY_ALBUM_IMG_URL = "https://files.catbox.moe/hp4toh.mp4"
+SPOTIFY_PLAYLIST_IMG_URL = "https://files.catbox.moe/hp4toh.mp4"
+FAILED = "https://files.catbox.moe/hp4toh.mp4"
 
 # ───── Utility & Functional ───── #
 def time_to_seconds(time: str) -> int:
