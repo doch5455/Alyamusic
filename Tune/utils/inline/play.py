@@ -45,13 +45,13 @@ def stream_markup_timer(_, chat_id, played, dur):
     return [
         [
             InlineKeyboardButton(
-                text="➕ Beni Grubuna Ekle",
+                text="✚ 𝗕𝗲𝗻𝗶 𝗚𝗿𝘂𝗯𝘂𝗻𝗮 𝗘𝗸𝗹𝗲 ✚",
                 url=f"https://t.me/{app.username}?startgroup=true",
             )
         ],
         [
             InlineKeyboardButton(
-                text="🩵 Kanal",
+                text="📢»𝗞𝗮𝗻𝗮𝗹",
                 url=SUPPORT_CHANNEL,
             ),
             InlineKeyboardButton(
