@@ -7,22 +7,28 @@ from config import autoclean, time_to_seconds
 
 
 async def put_queue(
-    chat_id,
-    original_chat_id,
-    file,
-    title,
-    duration,
-    user,
-    vidid,
-    user_id,
-    stream,
+    chat_id: int,
+    original_chat_id: int,
+    file: str,
+    title: str,
+    duration: str,
+    user: str,
+    vidid: str,
+    user_id: int,
+    stream: str,
     forceplay: Union[bool, str] = None,
 ):
+    """Sıraya yeni müzik/video ekler."""
+
+    # Büyük harfe çeviri
     title = title.title()
+
+    # Süreyi saniyeye çevir (3 saniye tolerans)
     try:
-        duration_in_seconds = time_to_seconds(duration) - 3
+        duration_in_seconds = max(time_to_seconds(duration) - 3, 0)
     except:
         duration_in_seconds = 0
+
     put = {
         "title": title,
         "dur": duration,
@@ -35,29 +41,34 @@ async def put_queue(
         "seconds": duration_in_seconds,
         "played": 0,
     }
+
+    # Forceplay → En üste koy
     if forceplay:
-        check = db.get(chat_id)
-        if check:
-            check.insert(0, put)
+        if db.get(chat_id):
+            db[chat_id].insert(0, put)
         else:
-            db[chat_id] = []
-            db[chat_id].append(put)
+            db[chat_id] = [put]
     else:
-        db[chat_id].append(put)
+        db.setdefault(chat_id, []).append(put)
+
+    # Otomatik temizleme listesine ekle
     autoclean.append(file)
 
 
 async def put_queue_index(
-    chat_id,
-    original_chat_id,
-    file,
-    title,
-    duration,
-    user,
-    vidid,
-    stream,
+    chat_id: int,
+    original_chat_id: int,
+    file: str,
+    title: str,
+    duration: str,
+    user: str,
+    vidid: str,
+    stream: str,
     forceplay: Union[bool, str] = None,
 ):
+    """Index / m3u8 stream için sıraya ekler."""
+
+    # Özel URL kontrolü
     if "20.212.146.162" in vidid:
         try:
             dur = await asyncio.get_event_loop().run_in_executor(
@@ -65,10 +76,11 @@ async def put_queue_index(
             )
             duration = seconds_to_min(dur)
         except:
-            duration = "ᴜʀʟ sᴛʀᴇᴀᴍ"
             dur = 0
+            duration = "ᴜʀʟ sᴛʀᴇᴀᴍ"
     else:
         dur = 0
+
     put = {
         "title": title,
         "dur": duration,
@@ -80,12 +92,12 @@ async def put_queue_index(
         "seconds": dur,
         "played": 0,
     }
+
+    # Forceplay → En üste koy
     if forceplay:
-        check = db.get(chat_id)
-        if check:
-            check.insert(0, put)
+        if db.get(chat_id):
+            db[chat_id].insert(0, put)
         else:
-            db[chat_id] = []
-            db[chat_id].append(put)
+            db[chat_id] = [put]
     else:
-        db[chat_id].append(put)
+        db.setdefault(chat_id, []).append(put)
