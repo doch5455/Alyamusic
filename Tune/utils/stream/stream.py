@@ -5,15 +5,15 @@ from typing import Union
 from pyrogram.types import InlineKeyboardMarkup
 
 import config
-from HasiiMusic import Carbon, YouTube, app
-from HasiiMusic.core.call import JARVIS
-from HasiiMusic.misc import db
-from HasiiMusic.utils.database import add_active_video_chat, is_active_chat
-from HasiiMusic.utils.exceptions import AssistantErr
-from HasiiMusic.utils.inline import aq_markup, close_markup, stream_markup
-from HasiiMusic.utils.pastebin import TuneBin
-from HasiiMusic.utils.stream.queue import put_queue, put_queue_index
-from HasiiMusic.utils.errors import capture_internal_err
+from Tune import Carbon, YouTube, app
+from Tune.core.call import JARVIS
+from Tune.misc import db
+from Tune.utils.database import add_active_video_chat, is_active_chat
+from Tune.utils.exceptions import AssistantErr
+from Tune.utils.inline import aq_markup, close_markup, stream_markup
+from Tune.utils.pastebin import TuneBin
+from Tune.utils.stream.queue import put_queue, put_queue_index
+from Tune.utils.errors import capture_internal_err
 
 
 @capture_internal_err
